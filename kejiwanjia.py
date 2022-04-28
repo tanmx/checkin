@@ -37,7 +37,7 @@ def login(username, password):
     except KeyError as e:
         error_message = responseLogin.json()['message'].split('：')[1]
         logger.error('登陆失败：%s', error_message)
-        push.push('科技玩家', 'https://day.app/assets/images/avatar.jpg', 1, error_message)
+        push.push('科技玩家', 'https://raw.githubusercontent.com/tanmx/checkin/main/icon/kejiwanjia.png', 1, error_message)
         return 1
        
 def checkin(token):
@@ -64,7 +64,7 @@ def checkin(token):
         pushMessage = '今日已签到，获得 ' + responseCheckin.json() + ' 积分'
     # message = {'date': '2022-01-25 15:35:58', 'credit': 98, 'mission': {'date': '2022-01-25 15:35:58', 'credit': '98', 'always': '1', 'tk': {'days': 0, 'credit': 0, 'bs': '2'}, 'my_credit': '298', 'current_user': 19348}}
     logger.info(pushMessage)
-    push.push('科技玩家', 'https://day.app/assets/images/avatar.jpg', 0, pushMessage)
+    push.push('科技玩家', 'https://raw.githubusercontent.com/tanmx/checkin/main/icon/kejiwanjia.png', 0, pushMessage)
     #push(pushMessage)
 
 # def push(message):

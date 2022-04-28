@@ -49,7 +49,7 @@ class MXcheckin:
         #    logger.info('%s', session.cookies.get_dict())
         else:
             logger.error('登陆失败')
-            push.push('moxingbbs', 'https://day.app/assets/images/avatar.jpg', 1, '登陆失败')
+            push.push('moxingbbs', 'https://raw.githubusercontent.com/tanmx/checkin/main/icon/moxingbbs.png', 1, '登陆失败')
 
     def form_hash(self):
         rst = self.session.get( self.url + '/member.php?mod=logging&action=login').text
@@ -91,10 +91,10 @@ class MXcheckin:
             total_rmb, today_add = self.user_info()
             message = username + ' 签到成功，今日软妹币：+' + today_add + ' 软妹币共有：' + total_rmb
             logger.info('开始消息推送')
-            push.push('moxingbbs', 'https://day.app/assets/images/avatar.jpg', 0, message)
+            push.push('moxingbbs', 'https://raw.githubusercontent.com/tanmx/checkin/main/icon/moxingbbs.png', 0, message)
             logger.info('%s', message)
         else:
-            push.push('moxingbbs', 'https://day.app/assets/images/avatar.jpg', 1, '签到失败')
+            push.push('moxingbbs', 'https://raw.githubusercontent.com/tanmx/checkin/main/icon/moxingbbs.png', 1, '签到失败')
             logger.error('签到失败')
         
         
