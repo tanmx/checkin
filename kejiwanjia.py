@@ -5,6 +5,7 @@ import requests
 import json
 import logging
 import os
+import push
 
 '''
 cron: 50 8 * * * kejiwanjia.py
@@ -28,14 +29,17 @@ def login(username, password):
         'User-Agent': UA,
         'Referer': 'https://www.kejiwanjia.com/'
     }
+    responseLogin = requests.post(login_url, data=data, headers=headers)
     try:
-        responseLogin = requests.post(login_url, data=data, headers=headers)
-        logger.info('登陆成功!')
-        return responseLogin.json()['token']
-    except requests.RequestException as e:
-        logger.error('登陆失败：%s', e)
-
-
+        token = responseLogin.json()['token']
+        logger.info('登陆成功')
+        return token
+    except KeyError as e:
+        error_message = responseLogin.json()['message'].split('：')[1]
+        logger.error('登陆失败：%s', error_message)
+        push.push('科技玩家', 'https://day.app/assets/images/avatar.jpg', 1, error_message)
+        return 1
+       
 def checkin(token):
     session = requests.session()
     mission_url = 'https://www.kejiwanjia.com/wp-json/b2/v1/getUserMission'
@@ -60,29 +64,28 @@ def checkin(token):
         pushMessage = '今日已签到，获得 ' + responseCheckin.json() + ' 积分'
     # message = {'date': '2022-01-25 15:35:58', 'credit': 98, 'mission': {'date': '2022-01-25 15:35:58', 'credit': '98', 'always': '1', 'tk': {'days': 0, 'credit': 0, 'bs': '2'}, 'my_credit': '298', 'current_user': 19348}}
     logger.info(pushMessage)
-    push(pushMessage)
+    push.push('科技玩家', 'https://day.app/assets/images/avatar.jpg', 0, pushMessage)
+    #push(pushMessage)
 
-
-def push(message):
-    push_url = 'https://api2.pushdeer.com/message/push'
-    payload = {'pushkey': 'PDU3747TBEFDPFJJpriXn3ibqxPEoF3JWJ6fxz9f', 'text': message}
-    try:
-        response = requests.get(push_url, params=payload)
-    except requests.RequestException as e:
-        logger.error(e)
-
+# def push(message):
+#     push_url = 'https://api2.pushdeer.com/message/push'
+#     payload = {'pushkey': 'PDU3747TBEFDPFJJpriXn3ibqxPEoF3JWJ6fxz9f', 'text': message}
+#     try:
+#         response = requests.get(push_url, params=payload)
+#     except requests.RequestException as e:
+#         logger.error(e)
 
 def main():
     username = ''
     password = ''
-    if not username is None or not password is None:
+    if username is None or password is None:
         logger.info('未配置登陆信息，尝试从环境变量获取……')
         username = os.environ.get('KJWJ_USERNAME', None)
         password = os.environ.get('KJWJ_PASSWORD', None)
 
     token = login(username, password)
-    checkin(token)
-
+    if token != 1:
+        checkin(token)
 
 if __name__ == '__main__':
     main()

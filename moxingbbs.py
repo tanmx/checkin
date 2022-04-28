@@ -49,6 +49,7 @@ class MXcheckin:
         #    logger.info('%s', session.cookies.get_dict())
         else:
             logger.error('登陆失败')
+            push.push('moxingbbs', 'https://day.app/assets/images/avatar.jpg', 1, '登陆失败')
 
     def form_hash(self):
         rst = self.session.get( self.url + '/member.php?mod=logging&action=login').text
@@ -90,16 +91,16 @@ class MXcheckin:
             total_rmb, today_add = self.user_info()
             message = username + ' 签到成功，今日软妹币：+' + today_add + ' 软妹币共有：' + total_rmb
             logger.info('开始消息推送')
-            push.push('moxingbbs', message)
+            push.push('moxingbbs', 'https://day.app/assets/images/avatar.jpg', 0, message)
             logger.info('%s', message)
         else:
+            push.push('moxingbbs', 'https://day.app/assets/images/avatar.jpg', 1, '签到失败')
             logger.error('签到失败')
         
         
-
 if __name__ == '__main__':
-    username = 'tanming'
-    password = 'zM@1314moxing'
+    username = ''
+    password = ''
     if username is None or password is None:
         logger.info('未配置登陆信息，尝试从环境变量获取……')
         username = os.environ.get('MX_USERNAME', None)
