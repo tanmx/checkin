@@ -77,19 +77,11 @@ def checkin(token):
 #         logger.error(e)
 
 def main():
-    username = ''
-    password = ''
-    try:
-        username, password
-    except NameError:
-        logger.info('未配置登陆信息，尝试从环境变量获取……')
-        username = os.environ.get('KJWJ_USERNAME', None)
-        password = os.environ.get('KJWJ_PASSWORD', None)
-        token = login(username, password)
-        if token != 1:
-            checkin(token)
-    else:
-        sys.exit(1)
+    username = os.environ.get('KJWJ_USERNAME', None)
+    password = os.environ.get('KJWJ_PASSWORD', None)
+    token = login(username, password)
+    if token != 1:
+        checkin(token)
 
 if __name__ == '__main__':
     main()
