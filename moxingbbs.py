@@ -55,6 +55,14 @@ class MXcheckin:
         loginhash = re.search(r'<div id="main_messaqge_(.+?)">', rst).group(1)
         formhash = re.search(r'<input type="hidden" name="formhash" value="(.+?)" />', rst).group(1)
         return loginhash, formhash
+    
+    def user_info(self):
+        user_info = self.session.get(self.url + '/home.php?mod=spacecp&ac=credit').text
+        #logger.info('%s', user_info)
+        total_rmb = re.search(r'软妹币: </em>(\d+).+?</li>', user_info).group(1)
+        today_add = re.search(r'软妹币 <span class="xi1">\+(\d+)</span></td>', user_info).group(1)
+        #logger.info('%s,%s', total_rmb, today_add)
+        return total_rmb, today_add
 
     def checkin(self):
         self.user_login()
@@ -76,7 +84,18 @@ class MXcheckin:
         }
         checkin_url = self.url + '/plugin.php?id=k_misign:sign'
         checkin_rst = self.session.post(checkin_url, headers=headers, data=formData)
-        logger.info('%s', checkin_rst.text)
+        if re.search(u'今日已签',checkin_rst.text):
+            logger.info('%s 签到成功', username)
+            #logger.info('%s', checkin_rst.text)
+            total_rmb, today_add = self.user_info()
+            message = username + ' 签到成功，今日软妹币：+' + today_add + ' 软妹币共有：' + total_rmb
+            logger.info('开始消息推送')
+            push.push('moxingbbs', message)
+            logger.info('%s', message)
+        else:
+            logger.error('签到失败')
+        
+        
 
 if __name__ == '__main__':
     username = 'tanming'

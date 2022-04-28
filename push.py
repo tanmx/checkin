@@ -5,6 +5,8 @@ import logging
 
 cfg = ConfigParser()
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger("推送服务")
 
 def load_config():
     config_path = os.path.join(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config'), 'push.ini')
@@ -98,12 +100,12 @@ def push(checkin_name, push_message):
         return 0
     if cfg.getboolean('setting', 'enable'):
         push_server = cfg.get('setting', 'push_server').lower()
-        log.info("正在执行推送......")
+        logging.info("正在执行推送......")
         try:
-            log.debug(f"推送所用的服务为：{push_server}")
+            logging.debug(f"推送所用的服务为：{push_server}")
             eval(push_server[:10].lower() + "(checkin_name, push_message)")
         except NameError:
-            log.warning("推送服务名称错误")
+            logging.warning("推送服务名称错误")
         else:
-            log.info("推送完毕......")
+            logging.info("推送完毕......")
     return 0
