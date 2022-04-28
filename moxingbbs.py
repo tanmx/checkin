@@ -6,6 +6,7 @@ import logging
 import os
 import hashlib
 import push
+import sys
 '''
 cron: 51 8 * * * moxingbbs.py
 new Env('MX论坛签到');
@@ -50,6 +51,7 @@ class MXcheckin:
         else:
             logger.error('登陆失败')
             push.push('moxingbbs', 'https://raw.githubusercontent.com/tanmx/checkin/main/icon/moxingbbs.png', 1, '登陆失败')
+            sys.exit()
 
     def form_hash(self):
         rst = self.session.get( self.url + '/member.php?mod=logging&action=login').text
@@ -99,10 +101,6 @@ class MXcheckin:
         
         
 if __name__ == '__main__':
-    username = ''
-    password = ''
-    if username is None or password is None:
-        logger.info('未配置登陆信息，尝试从环境变量获取……')
-        username = os.environ.get('MX_USERNAME', None)
-        password = os.environ.get('MX_PASSWORD', None)
+    username = os.environ.get('MX_USERNAME', None)
+    password = os.environ.get('MX_PASSWORD', None)
     MXcheckin(username, password).checkin()
