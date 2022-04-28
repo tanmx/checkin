@@ -6,6 +6,7 @@ import json
 import logging
 import os
 import push
+import sys
 
 '''
 cron: 50 8 * * * kejiwanjia.py
@@ -78,14 +79,17 @@ def checkin(token):
 def main():
     username = ''
     password = ''
-    if username is None or password is None:
+    try:
+        username, password
+    except NameError:
         logger.info('未配置登陆信息，尝试从环境变量获取……')
         username = os.environ.get('KJWJ_USERNAME', None)
         password = os.environ.get('KJWJ_PASSWORD', None)
-
-    token = login(username, password)
-    if token != 1:
-        checkin(token)
+        token = login(username, password)
+        if token != 1:
+            checkin(token)
+    else:
+        sys.exit(1)
 
 if __name__ == '__main__':
     main()
