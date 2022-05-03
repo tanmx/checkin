@@ -91,7 +91,7 @@ class MXcheckin:
             logger.info('%s 签到成功', username)
             #logger.info('%s', checkin_rst.text)
             total_rmb, today_add = self.user_info()
-            message = username + ' 签到成功，今日软妹币：+' + today_add + ' 软妹币共有：' + total_rmb
+            message = username + ' 签到成功，获得 ' + today_add + ' 软妹币，共计 ' + total_rmb + ' 软妹币'
             logger.info('开始消息推送')
             push.push('moxingbbs', 'https://raw.githubusercontent.com/tanmx/checkin/main/icon/moxingbbs.png', 0, message)
             logger.info('%s', message)
