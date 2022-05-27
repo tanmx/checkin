@@ -17,7 +17,7 @@ new Env('MX论坛签到');
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("MX论坛")
 
-URL = 'https://moxing.institute'
+URL = 'https://moxing.finance'
 
 class MXcheckin:
     def __init__(self, username, password):
